@@ -3,5 +3,5 @@
 **Integrantes:**
 
 - Jorge Rios
-- Jose Cruz
+- Jose Chavez
 - Carlos Guerrero

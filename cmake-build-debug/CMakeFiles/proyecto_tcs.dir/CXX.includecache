@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/jose/proyecto_tcs/State.h
+vector
+-
+
+/home/jose/proyecto_tcs/main.cpp
+iostream
+-
+State.h
+/home/jose/proyecto_tcs/State.h
+

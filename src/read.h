@@ -1,13 +1,13 @@
-#ifdef READ_H
+#ifndef READ_H
 #define READ_H
 
-#include "afd.h"
+#include "Af.h"
 #include <iostream>
 
 
 class Read {
 private:
-  afd readAfd;
+  Af readAfd;
 
   std::string pieceLineRead(std::string &lineRead) {
     std::size_t posSpace = lineRead.find(" ");
@@ -24,18 +24,20 @@ private:
 public:
   Read() {
     std::string lineRead = "";
-    int numberStates = 0, startState = 0;
-    int numberFinishStates = 0, finishState = 0;
+    int numberStates = 0;
+    std::string startStateTag;
+    std::string finishStateTag;
+    int numberFinishStates = 0;
     int exitState = 0, transitionVar = 0, arrivalState = 0;
     std::getline(std::cin, lineRead);
     numberStates = std::stoi(pieceLineRead(lineRead));
     (this->readAfd).setNumberStates(numberStates);
-    startState = std::stoi(pieceLineRead(lineRead));
-    (this->readAfd).setStartState(startState);
+    startStateTag = pieceLineRead(lineRead);
+    (this->readAfd).setStartState(startStateTag);
     numberFinishStates = std::stoi(pieceLineRead(lineRead));
     for (size_t i = 0; i < numberFinishStates; i++) {
-      finishState = std::stoi(pieceLineRead(lineRead));
-      (this->readAfd).addFinishState(finishState);
+      finishStateTag = pieceLineRead(lineRead);
+      (this->readAfd).setFinishState(finishStateTag);
     }
     for (size_t i = 0; i < (2*numberStates); i++) {
       lineRead = std::getline(std::cin, lineRead);

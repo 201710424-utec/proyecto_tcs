@@ -1,14 +1,12 @@
+#ifndef STATE_H
+#define STATE_H
 #include <vector>
 class State{
 public:
-    int tag;
-    std::vector<State*> one;
-    std::vector<State*> zero;
-    std::vector<State*> epsilon;
-    bool finish;
+    std::string tag;
     
-State()= default;
-~State();
-
-
+    State() = default;
+    ~State();
 };
+
+#endif 

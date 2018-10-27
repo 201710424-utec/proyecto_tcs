@@ -4,6 +4,4 @@ project(proyecto_tcs)
 set(CMAKE_CXX_STANDARD 11)
 
 add_executable(proyecto_tcs
-        Afd.h
-        main.cpp
-        State.h Brz.h Transition.h)
+    src/main.cpp)

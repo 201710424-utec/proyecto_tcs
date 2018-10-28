@@ -17,27 +17,25 @@ class Af {
 
  public:
   void addState(std::string newState) {
-    State *state = new State{newState};
-    this->states[newState] = state;
+    this->states[newState] = new State{newState};
   }
 
   void setNumberStates(int numberStates) {
     this->numberStates = numberStates;
   }
 
-  void setStartState(std::string startStateTag) {
+  void setInitialState(const std::string &startStateTag) {
+    this->states[startStateTag] = new State{startStateTag};
     this->initialStates.push_back(this->states[startStateTag]);
   }
 
-  void setFinishState(std::string finishStateTag) {
+  void setTerminateState(const std::string &finishStateTag) {
+    this->states[finishStateTag] = new State{finishStateTag};
     this->terminateStates.push_back(this->states[finishStateTag]);
   }
 
-  void addTransition(const std::string exitState, const std::string transitionVar, const std::string arrivalState) {
-    auto *begin = new State{exitState};
-    auto *end = new State{arrivalState};
-
-    auto *newTransition = new Transition{begin, end, transitionVar};
+  void addTransition(const std::string &departureState, const std::string &caracter, const std::string &arrivalState) {
+    auto *newTransition = new Transition{new State{departureState}, new State{arrivalState}, caracter};
     this->transitions.push_back(newTransition);
   }
 
@@ -49,54 +47,72 @@ class Af {
 
     // Transitions helpers
     std::string departureState;
-    std::string transitionCharacter;
+    std::string transitionCaracter;
     std::string arrivalState;
 
     // First line
     std::cin >> this->numberStates >> initialState >> numTerminalStates;
 
-    auto *tempInitialState = new State{initialState};
-    this->initialStates.push_back(tempInitialState);
-    this->states[tempInitialState->tag] = tempInitialState;
+    this->setInitialState(initialState);
+    this->states[initialState] = new State{initialState};
 
     for (int i = 0; i < std::stoi(numTerminalStates); ++i) {
       std::cin >> terminateState;
-      auto *tempTerminateState = new State{terminateState};
-      this->terminateStates.push_back(tempTerminateState);
+      this->setTerminateState(terminateState);
 
       if (!this->states[terminateState]) {
-        this->states[terminateState] = tempTerminateState;
+        this->states[terminateState] = new State{terminateState};;
       }
     };
 
-    std::cout << this->numberStates << " " << this->initialStates[0]->tag << " " << numTerminalStates << " "
-              << this->terminateStates.size() << std::endl;
-
     // Read 2n transitions
     for (int j = 0; j < 2 * this->numberStates; ++j) {
-      std::cin >> departureState >> transitionCharacter >> terminateState;
+      std::cin >> departureState >> transitionCaracter >> terminateState;
 
       if (!this->states[departureState]) {
-        auto *tempDepartureState = new State{departureState};
-        this->states[departureState] = tempDepartureState;
+        this->addState(departureState);
       }
 
       if (!this->states[terminateState]) {
-        auto *tempTerminateState = new State{terminateState};
-        this->states[terminateState] = tempTerminateState;
+        this->addState(terminateState);
       }
 
-      auto
-          *transition = new Transition{this->states[departureState], this->states[terminateState], transitionCharacter};
+      auto *transition = new Transition{this->states[departureState], this->states[terminateState], transitionCaracter};
       this->transitions.push_back(transition);
     }
   }
 
-  std::vector<State *> get_initialStates() {
+  void describe() {
+    // First line: number of states, initial states, number of terminate states, terminate states
+    // Total number of states
+    std::cout << this->numberStates << " ";
+
+    // Initial states
+    for (auto &initialState : this->initialStates) {
+      std::cout << initialState->getTag() << " ";
+    }
+
+    // Total number of terminate states
+    std::cout << this->terminateStates.size() << " ";
+
+    // Terminate states
+    for (auto &terminateState : this->terminateStates) {
+      std::cout << terminateState->getTag() << " ";
+    }
+
+    std::cout << std::endl;
+    // 2n line: Transitions
+    for (auto &transition : this->transitions) {
+      std::cout << transition->get_begin()->getTag() << " " << transition->get_caracter() << " "
+                << transition->get_end()->getTag() << std::endl;
+    }
+  }
+
+  std::vector<State *> &get_initialStates() {
     return this->initialStates;
   }
 
-  std::vector<State *> get_terminateStates() {
+  std::vector<State *> &get_terminateStates() {
     return this->terminateStates;
   }
 

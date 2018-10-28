@@ -27,11 +27,14 @@ class Transition {
   }
 
   void swap() {
+    if (this->begin == this->end) {
+      return;
+    }
+
     State *alt;
     alt = this->begin;
     this->begin = this->end;
     this->end = alt;
-    delete[]alt;
   }
 };
 

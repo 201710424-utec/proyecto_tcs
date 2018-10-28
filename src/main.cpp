@@ -1,11 +1,11 @@
 #include <iostream>
 #include "State.h"
 #include "Transition.h"
-int main(){
-    
+#include "Af.h"
 
-    std::cout<<"perro";
+int main() {
+  Af afd;
+  afd.buildFromConsole();
 
-    
-    return 0;
+  return 0;
 }

@@ -1,1 +1,4 @@
-CMakeLists.txt not found in /home/jose/proyecto_tcs
+/home/jotarios/software/clion/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/jotarios/Documents/university/courses/cs2101/project/proyecto_tcs
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/jotarios/Documents/university/courses/cs2101/project/proyecto_tcs/cmake-build-debug

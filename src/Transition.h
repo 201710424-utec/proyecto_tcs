@@ -1,30 +1,30 @@
 #ifndef TRANSITION_H
 #define TRANSITION_H
+
 #include "State.h"
 #include <string>
 
-class Transition{
-private:
+class Transition {
+ private:
 
-  State * begin;
-  State * end;
+  State *begin;
+  State *end;
   std::string caracter;
 
-public:
+ public:
+  Transition(State *begin, State *end, std::string caracter) : begin(begin), end(end), caracter(caracter) {};
 
-    Transition(State *begin, State *end, std::string caracter): begin(begin), end(end), caracter(caracter) {};
+  State *get_begin() {
+    return this->begin;
+  }
 
-    State *get_begin(){
-        return this->begin;
-    }
+  State *get_end() {
+    return this->end;
+  }
 
-    State *get_end(){
-        return this->end;
-    }
-
-    std::string get_caracter(){
-        return this->caracter;
-    }
+  std::string get_caracter() {
+    return this->caracter;
+  }
 
 };
 #endif

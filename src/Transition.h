@@ -26,5 +26,13 @@ class Transition {
     return this->caracter;
   }
 
+  void swap() {
+    State *alt;
+    alt = this->begin;
+    this->begin = this->end;
+    this->end = alt;
+    delete[]alt;
+  }
 };
+
 #endif

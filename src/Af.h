@@ -92,6 +92,18 @@ class Af {
     }
   }
 
+  std::vector<State *> get_initialStates() {
+    return this->initialStates;
+  }
+
+  std::vector<State *> get_terminateStates() {
+    return this->terminateStates;
+  }
+
+  std::vector<Transition *> get_transitions() {
+    return this->transitions;
+  }
+
   Af() = default;
   ~Af() = default;
 };

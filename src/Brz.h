@@ -13,13 +13,15 @@ class Brz {
     this->automata = automata;
   }
 
-  void swap() {
+  Af getAutomata() const {
+    return this->automata;
+  }
 
-    (this->automata).get_initialStates().swap((this->automata).get_terminateStates());
-    for (auto &i : (this->automata).get_transitions()) {
+  void reversing() {
+    this->automata.get_initialStates().swap(this->automata.get_terminateStates());
+    for (auto &i : this->automata.get_transitions()) {
       i->swap();
     }
-
   }
 };
 

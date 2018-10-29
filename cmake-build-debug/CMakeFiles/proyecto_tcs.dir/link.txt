@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/proyecto_tcs.dir/src/main.cpp.o  -o proyecto_tcs 

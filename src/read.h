@@ -4,31 +4,30 @@
 #include "Af.h"
 #include <iostream>
 
-
 class Read {
-private:
+ private:
   Af readAfd;
 
   std::string pieceLineRead(std::string &lineRead) {
     std::size_t posSpace = lineRead.find(" ");
     if (posSpace != std::string::npos) {
-      std::string piece = lineRead.substr(0,posSpace);
+      std::string piece = lineRead.substr(0, posSpace);
       lineRead = lineRead.substr(++posSpace);
       return piece;
-    }else{
+    } else {
       std::string piece = lineRead;
       return piece;
     }
   }
 
-public:
+ public:
   Read() {
-    std::string lineRead = "";
+    std::string lineRead;
     int numberStates = 0;
     std::string startStateTag;
     std::string finishStateTag;
     int numberFinishStates = 0;
-    int exitState = 0, transitionVar = 0, arrivalState = 0;
+    std::string exitState, transitionVar, arrivalState;
     std::getline(std::cin, lineRead);
     numberStates = std::stoi(pieceLineRead(lineRead));
     (this->readAfd).setNumberStates(numberStates);
@@ -39,16 +38,16 @@ public:
       finishStateTag = pieceLineRead(lineRead);
       (this->readAfd).setFinishState(finishStateTag);
     }
-    for (size_t i = 0; i < (2*numberStates); i++) {
-      lineRead = std::getline(std::cin, lineRead);
-      exitState = std::stoi(pieceLineRead(lineRead));
-      transitionVar = std::stoi(pieceLineRead(lineRead));
-      arrivalState = std::stoi(pieceLineRead(lineRead));
-      (this->readAfd).addTransition(exitState,transitionVar,arrivalState);
+    for (size_t i = 0; i < (2 * numberStates); i++) {
+      std::getline(std::cin, lineRead);
+      exitState = pieceLineRead(lineRead);
+      transitionVar = pieceLineRead(lineRead);
+      arrivalState = pieceLineRead(lineRead);
+      (this->readAfd).addTransition(exitState, transitionVar, arrivalState);
     }
   }
 
-  afd getAfd() {return this->readAfd}
+  inline Af getAfd() { return this->readAfd; }
 };
 
 #endif

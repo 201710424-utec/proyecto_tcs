@@ -1,11 +1,13 @@
-#include <iostream>
-#include "State.h"
-#include "Transition.h"
-int main(){
-    
+#include "Af.h"
+#include "Brz.h"
 
-    std::cout<<"perro";
+int main() {
+  Af afd;
+  afd.buildFromConsole();
 
-    
-    return 0;
+  Brz *brz = new Brz{afd};
+  brz->reversing();
+
+  brz->getAutomata().describe();
+  return 0;
 }

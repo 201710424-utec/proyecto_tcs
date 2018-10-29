@@ -1,5 +1,6 @@
 #ifndef TRANSITION_H
 #define TRANSITION_H
+
 #include "State.h"
 #include <string>
 
@@ -11,7 +12,6 @@ class Transition {
   std::string caracter;
 
  public:
-
   Transition(State *begin, State *end, std::string caracter) : begin(begin), end(end), caracter(caracter) {};
 
   State *get_begin() {
@@ -27,13 +27,15 @@ class Transition {
   }
 
   void swap() {
+    if (this->begin == this->end) {
+      return;
+    }
+
     State *alt;
     alt = this->begin;
     this->begin = this->end;
     this->end = alt;
-    delete[]alt;
   }
-
 };
 
 #endif

@@ -7,7 +7,8 @@ int main() {
 
   Brz *brz = new Brz{afd};
   brz->reversing();
+  brz->afd();
 
-  brz->getAutomata().describe();
+  brz->describe_test();
   return 0;
 }

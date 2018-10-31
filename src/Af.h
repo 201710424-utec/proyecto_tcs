@@ -16,6 +16,7 @@ class Af {
   std::vector<State *> terminateStates;
 
  public:
+
   void addState(std::string newState) {
     this->states[newState] = new State{newState};
   }
@@ -106,6 +107,15 @@ class Af {
       std::cout << transition->get_begin()->getTag() << " " << transition->get_caracter() << " "
                 << transition->get_end()->getTag() << std::endl;
     }
+  }
+
+
+
+  int get_numberStates() {
+    return numberStates;
+  }
+  std::map<std::string, State *> &get_States() {
+    return this->states;
   }
 
   std::vector<State *> &get_initialStates() {

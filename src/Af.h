@@ -109,8 +109,6 @@ class Af {
     }
   }
 
-
-
   int get_numberStates() {
     return numberStates;
   }

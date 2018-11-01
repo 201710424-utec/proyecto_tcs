@@ -67,13 +67,6 @@ class Brz {
     this->automata = newautomata;
 
     //########################## end of the States push ##########################
-    /*
-     2 0 1 1
-    0 0 1
-    0 1 0
-    1 0 0
-    1 1 1
-     */
 
 
 

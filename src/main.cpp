@@ -8,7 +8,11 @@ int main() {
   Brz *brz = new Brz{afd};
   brz->reversing();
   brz->afd();
+  brz->optimize();
+  brz->reversing();
+  brz->afd();
+  brz->optimize();
 
-  brz->describe_test();
+  //brz->describe_test();
   return 0;
 }

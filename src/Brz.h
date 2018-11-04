@@ -2,10 +2,12 @@
 #define BRZ_H
 
 #include "Af.h"
+#include <sstream>
+#include <string>
 
 class Brz {
  private:
-  Af automata;
+   Af automata;
  public:
 
   Brz() = default;
@@ -13,7 +15,7 @@ class Brz {
     this->automata = automata;
   }
 
-  Af getAutomata() const {
+   Af getAutomata() const {
     return this->automata;
   }
 
@@ -24,8 +26,37 @@ class Brz {
     }
   }
 
+  static std::string cast(char c){
+    std::stringstream ss;
+    std::string s;
+
+    ss << c;
+    ss >> s;
+    return s;
+  }
+  std::string* get_transition(std::string tag){
+    std::string *arr = new std::string [2];
+    std::string zero;
+    std::string one;
+    std::vector<Transition *> vec = automata.get_transitions();
+    for(auto &i : tag){
+
+      for(auto &j : vec){
+        if(j->get_begin()->getTag()==cast(i)){
+          (j->get_caracter()=="0")? zero+=j->get_end()->getTag() : one+=j->get_end()->getTag();
+        }
+      }
+    }
+    arr[0]=zero;
+    arr[1]=one;
+
+    return arr;
+  }
   void afd() {
     Af newautomata;
+
+    //################## pushing states ################################
+
     auto it = automata.get_States().begin();
 
     // setting the singular states(can it be simplify?)
@@ -64,14 +95,46 @@ class Brz {
     }
 
     newautomata.addState(lastState);
-    this->automata = newautomata;
+    newautomata.addState("$");
 
-    //########################## end of the States push ##########################
+
+
+    // ###############################################################
+
+
+
+    //###################### make transitions #############################
+
+    auto it5=newautomata.get_States().begin();
+    std::string * ptr;
+    for(;it5!=newautomata.get_States().end();it5++){
+      ptr=get_transition(it5->first);
+      if(ptr[0].size()!=0){
+        newautomata.addTransition(it5->first,"0",ptr[0]);
+      }
+      else{
+        newautomata.addTransition(it5->first,"0","$");
+      }
+      if(ptr[1].size()!=0){
+        newautomata.addTransition(it5->first,"0",ptr[1]);
+      }
+      else{
+        newautomata.addTransition(it5->first,"0","$");
+      }
+    }
+
+    //################################################################
 
 
 
   }
-  //################################ describe only for tests ###########################
+
+  void optimize(){
+
+  }
+
+
+  // describe only for tests
 
   void describe_test() {
     auto iter = automata.get_States().begin();
@@ -81,7 +144,6 @@ class Brz {
 
   }
 
-  //#####################################################################################
 };
 
 #endif

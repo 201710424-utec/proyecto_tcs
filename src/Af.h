@@ -14,6 +14,7 @@ class Af {
   std::vector<Transition *> transitions;
   std::vector<State *> initialStates;
   std::vector<State *> terminateStates;
+  std::vector<std::string> alphabet;
 
  public:
   void addState(std::string newState) {
@@ -30,13 +31,25 @@ class Af {
   }
 
   void setTerminateState(const std::string &finishStateTag) {
-    this->states[finishStateTag] = new State{finishStateTag};
+    this->states[finishStateTag] = new State{finishStateTag, true};
     this->terminateStates.push_back(this->states[finishStateTag]);
+  }
+
+  void setAlphabet(const std::string &letter) {
+    this->alphabet.push_back(letter);
   }
 
   void addTransition(const std::string &departureState, const std::string &caracter, const std::string &arrivalState) {
     auto *newTransition = new Transition{new State{departureState}, new State{arrivalState}, caracter};
     this->transitions.push_back(newTransition);
+  }
+
+  Transition *getTransition(const std::string state, const std::string caracter) {
+    for (auto &transition : this->get_transitions()) {
+      if (transition->get_begin()->getTag() == state && transition->get_caracter() == caracter) {
+        return transition;
+      }
+    }
   }
 
   void buildFromConsole() {
@@ -50,18 +63,22 @@ class Af {
     std::string transitionCaracter;
     std::string arrivalState;
 
+    // alphabet helper
+    std::map<std::string, std::string *> alphabetHelper;
+
     // First line
     std::cin >> this->numberStates >> initialState >> numTerminalStates;
 
     this->setInitialState(initialState);
     this->states[initialState] = new State{initialState};
 
+    // Terminate states
     for (int i = 0; i < std::stoi(numTerminalStates); ++i) {
       std::cin >> terminateState;
       this->setTerminateState(terminateState);
 
       if (!this->states[terminateState]) {
-        this->states[terminateState] = new State{terminateState};;
+        this->states[terminateState] = new State{terminateState, true};
       }
     };
 
@@ -75,6 +92,11 @@ class Af {
 
       if (!this->states[terminateState]) {
         this->addState(terminateState);
+      }
+
+      if (!alphabetHelper[transitionCaracter]) {
+        alphabetHelper[transitionCaracter] = new std::string{transitionCaracter};
+        this->setAlphabet(transitionCaracter);
       }
 
       auto *transition = new Transition{this->states[departureState], this->states[terminateState], transitionCaracter};
@@ -108,6 +130,15 @@ class Af {
     }
   }
 
+  std::map<std::string, State *> get_states() {
+    return this->states;
+  }
+
+  State *getState(int index) {
+    auto castIndex = std::to_string(index);
+    return this->states[castIndex];
+  }
+
   std::vector<State *> &get_initialStates() {
     return this->initialStates;
   }
@@ -118,6 +149,14 @@ class Af {
 
   std::vector<Transition *> get_transitions() {
     return this->transitions;
+  }
+
+  std::vector<std::string> getAlphabet() {
+    return this->alphabet;
+  }
+
+  int getNumberStates() {
+    return this->numberStates;
   }
 
   Af() = default;

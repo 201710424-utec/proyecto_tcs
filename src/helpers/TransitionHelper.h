@@ -1,6 +1,3 @@
-//
-// Created by jose on 11/10/18.
-//
 #include <utility>
 #include <vector>
 #include <algorithm>
@@ -23,7 +20,6 @@ class TransitionHelper {
       this->sortString(value);
       std::string value2 = transition->get_begin()->getTag();
       this->sortString(value2);
-      //std::cout<<value<<std::endl;
       this->transitions[value2][transition->get_caracter()].push_back(value);
 
 

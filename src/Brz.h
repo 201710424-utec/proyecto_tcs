@@ -226,6 +226,16 @@ class Brz {
     newautomata.setNumberStates(this->automata.get_numberStates());
     this->automata = newautomata;
   }
+
+  void execute(){
+    this->reversing();
+    this->afd();
+    this->optimize();
+    this->remakeAutomata();
+    this->reversing();
+    this->afd();
+    this->optimize();
+  }
 };
 
 #endif

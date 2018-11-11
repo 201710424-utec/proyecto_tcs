@@ -9,12 +9,11 @@ int main() {
   brz->reversing();
   brz->afd();
   brz->optimize();
-  std::cout<<"######################################\n";
   brz->remakeAutomata();
   brz->reversing();
   brz->afd();
-  //brz->optimize();
-  //brz->getAutomata().describe();std::cout<<'\n';
+  brz->optimize();
+  brz->getAutomata().describe();std::cout<<'\n';
 
 
   return 0;

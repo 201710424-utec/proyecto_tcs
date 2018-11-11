@@ -35,6 +35,10 @@ class Af {
     this->terminateStates.push_back(this->states[finishStateTag]);
   }
 
+  void setAllAlphabet(std::vector<std::string> alphabet) {
+    this->alphabet = alphabet;
+  }
+
   void addTerminateState(const std::string &finishStateTag) {
     this->terminateStates.push_back(this->states[finishStateTag]);
   }
@@ -42,7 +46,7 @@ class Af {
     this->initialStates.push_back(this->states[initialStateTag]);
   }
 
-  void addTransition( std::string departureState,  std::string caracter,  std::string arrivalState) {
+  void addTransition(std::string departureState, std::string caracter, std::string arrivalState) {
     auto *newTransition = new Transition{this->states[departureState], this->states[arrivalState], caracter};
     this->transitions.push_back(newTransition);
   }

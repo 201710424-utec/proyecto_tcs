@@ -31,6 +31,8 @@ class Brz {
       i->swap();
     }
     this->transition = new TransitionHelper(this->automata);
+    this->transition->sortVector();
+    //this->transition->describe();
   }
 
   static std::string cast(char c) {
@@ -79,15 +81,18 @@ class Brz {
       iter2 = iter;
 
       for (iter2++; iter2 != this->automata.get_States().end(); iter2++) {
+
         state = iter->first + iter2->first;
+        this->sortString(state);
         vec.push_back(state);
+
         state = "";
       }
 
     }
 
     vec.push_back(final);
-    vec.emplace_back("$");
+    vec.push_back("$");
 
     /*  for(auto &state : vec){
         this->automata.addState(state);
@@ -113,6 +118,8 @@ class Brz {
               if (!in(extra, finalState)) {
 
                 extra += finalState;
+                this->sortString(extra);
+
               }
 
             }
@@ -124,6 +131,7 @@ class Brz {
           this->transition->set(statex, character, "$");
         } else {
           this->sortString(extra);
+
           this->transition->set(statex, character, extra);
         }
 
@@ -140,6 +148,7 @@ class Brz {
     }
 
     for (auto &state1 : vec) {
+      this->sortString(state1);
       this->automata.addState(state1);
     }
 
@@ -153,10 +162,13 @@ class Brz {
     this->sortString(newInitialState);
     this->automata.get_initialStates().clear();
     this->automata.setInitialState(newInitialState);
-    this->transition->describe();
+    //this->transition->describe();
 
     std::cout << '\n';
   }
+
+
+//###############################################################################################
 
   void optimize() {
 
@@ -173,17 +185,20 @@ class Brz {
       stackStates.pop();
       contador++;
       for (auto &letter : this->automata.getAlphabet()) {
-
+        std::string newFinalState;
         auto arrivalStates = this->transition->get(state, letter);
         for (auto &arrivalState : arrivalStates) {
-          if (!newAutomata.in(arrivalState)) {
-            stackStates.push(arrivalState);
-          }
-
-          newAutomata.addState(arrivalState);
-          newAutomata.addTransition(state, letter, arrivalState);
-
+          newFinalState+=arrivalState;
         }
+        if (!newAutomata.in(newFinalState)) {
+
+          newAutomata.addState(newFinalState);
+          stackStates.push(newFinalState);
+        }
+
+        newAutomata.addTransition(state, letter, newFinalState);
+        newFinalState="";
+
       }
     }
     for (auto &state:this->automata.get_terminateStates()) {
@@ -194,36 +209,44 @@ class Brz {
       }
     }
     newAutomata.setNumberStates(contador);
-
+    newAutomata.setAllAlphabet(this->automata.getAlphabet());
     this->automata = newAutomata;
     //this->transition->describe();
     this->transition->clear();
 
   }
 
+  //#############################################################################
+
+
   void remakeAutomata() {
     Af newautomata;
-    int cont=0;
-    std::map<std::string,std::string> auxiliarMap;
+    int cont = 0;
+    auto letter = 'x';
+    std::map<std::string, std::string> auxiliarMap;
     for (auto &i : this->automata.get_States()) {
-      auxiliarMap[i.first]=(std::to_string(cont));
+
+      auxiliarMap[i.first] = cast(static_cast<char>(letter + cont));
       cont++;
       newautomata.addState(auxiliarMap[i.first]);
+      //std::cout<<auxiliarMap[i.first]<<'\n';
     }
-    newautomata.getAlphabet()=this->automata.getAlphabet();
-    for(auto &j : this->automata.get_transitions()){
-      newautomata.addTransition(auxiliarMap[j->get_begin()->getTag()],j->get_caracter(),auxiliarMap[j->get_end()->getTag()]);
+    newautomata.setAllAlphabet(this->automata.getAlphabet());
+    for (auto &j : this->automata.get_transitions()) {
+      newautomata.addTransition(auxiliarMap[j->get_begin()->getTag()],
+                                j->get_caracter(),
+                                auxiliarMap[j->get_end()->getTag()]);
     }
-    for(auto &k : this->automata.get_initialStates()) {
+    for (auto &k : this->automata.get_initialStates()) {
       newautomata.addInitialState(auxiliarMap[k->getTag()]);
     }
 
-    for(auto &l : this->automata.get_terminateStates()) {
+    for (auto &l : this->automata.get_terminateStates()) {
       newautomata.addTerminateState(auxiliarMap[l->getTag()]);
     }
 
     newautomata.setNumberStates(this->automata.get_numberStates());
-    this->automata=newautomata;
+    this->automata = newautomata;
   }
   void changeStateNames() {
     int cont = 0;

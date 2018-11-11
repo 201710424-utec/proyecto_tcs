@@ -82,11 +82,8 @@ class Brz {
     auto iter2 = this->automata.get_States().begin();
 
     for (; iter != this->automata.get_States().end(); iter++) {
-
       iter2 = iter;
-
       for (iter2++; iter2 != this->automata.get_States().end(); iter2++) {
-
         state = iter->first + iter2->first;
         this->sortString(state);
         vec.push_back(state);
@@ -100,70 +97,44 @@ class Brz {
     vec.push_back("$");
 
     std::string extra;
-
     for (auto &character : this->automata.getAlphabet()) {
-
       for (auto &statex : vec) {
-
         for (auto &letter : statex) {
-
           if (!this->transition->get(cast(letter), character).empty()) {
-
             for (auto &finalState : this->transition->get(cast(letter), character)) {
-
               if (!in(extra, finalState)) {
-
                 extra += finalState;
                 this->sortString(extra);
-
               }
-
             }
-
           }
-
         }
         if (extra.empty()) {
-
           this->transition->set(statex, character, "$");
-
         } else {
-
           this->sortString(extra);
-
           this->transition->set(statex, character, extra);
         }
-
         extra = "";
       }
     }
 
     for (auto &character : this->automata.getAlphabet()) {
-
       for (auto &state : this->automata.get_States()) {
-
         if (this->transition->get(state.first, character).empty()) {
-
           this->transition->set(state.first, character, "$");
-
         }
       }
     }
 
     for (auto &state1 : vec) {
-
       this->sortString(state1);
-
       this->automata.addState(state1);
-
     }
 
     std::string newInitialState;
-
     for (auto &state2 : this->automata.get_initialStates()) {
-
       newInitialState += state2->getTag();
-
     }
 
     this->sortString(newInitialState);
@@ -184,7 +155,6 @@ class Brz {
     }
 
     int contador = 0;
-
     while (!stackStates.empty()) {
       auto state = stackStates.top();
       stackStates.pop();

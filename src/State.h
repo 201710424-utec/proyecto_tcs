@@ -12,6 +12,10 @@ class State {
     return this->tag;
   }
 
+  void changeTag(std::string tag) {
+    this->tag = tag;
+  }
+
   bool operator==(const State &stateToCompare) {
     return this->tag == stateToCompare.getTag();
   }

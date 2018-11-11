@@ -6,8 +6,11 @@ int main() {
   afd.buildFromConsole();
 
   Brz *brz = new Brz{afd};
-  brz->reversing();
-
+  brz->execute();
   brz->getAutomata().describe();
+
   return 0;
 }
+
+
+

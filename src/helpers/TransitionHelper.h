@@ -1,0 +1,55 @@
+//
+// Created by jose on 11/10/18.
+//
+#include <utility>
+#include <vector>
+
+#ifndef PROYECTO_TCS_TRANSITIONHELPER_H
+#define PROYECTO_TCS_TRANSITIONHELPER_H
+
+#include "../Af.h"
+
+class TransitionHelper {
+  std::map<std::string, std::map<std::string, std::vector<std::string> >> transitions;
+
+ public:
+  TransitionHelper(Af automata) {
+    for (auto &transition : automata.get_transitions()) {
+      this->transitions[transition->get_begin()->getTag()][transition->get_caracter()].push_back(transition->get_end()->getTag());
+    }
+  }
+
+  void set(const std::string &state, const std::string &character, std::string endState) {
+    this->transitions[state][character].push_back(std::move(endState));
+  }
+
+  std::vector<std::string> get(std::string state, std::string character) {
+    return this->transitions[state][character];
+  }
+
+  std::map<std::string, std::vector<std::string>> getMap2(std::string state) {
+    return this->transitions[state];
+  }
+
+  void clear(){
+    transitions.clear();
+  }
+
+  void describe() {
+    for (auto t : this->transitions) {
+      std::cout << t.first << std::endl;
+      for (auto &i : t.second) {
+        std::cout << i.first << " -> ";
+        for (auto &r :i.second) {
+          std::cout << r;
+        }
+        std::cout << '\n';
+      }
+      std::cout << "\n";
+    }
+    std::cout << '\n';
+  }
+};
+
+#endif //PROYECTO_TCS_TRANSITIONHELPER_H
+

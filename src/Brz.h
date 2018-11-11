@@ -4,10 +4,16 @@
 #include "Af.h"
 #include <sstream>
 #include <string>
+#include <math.h>
+#include <map>
+#include "helpers/TransitionHelper.h"
+#include <algorithm>
+#include <stack>
 
 class Brz {
  private:
-   Af automata;
+  Af automata;
+  TransitionHelper *transition;
  public:
 
   Brz() = default;
@@ -15,7 +21,7 @@ class Brz {
     this->automata = automata;
   }
 
-   Af getAutomata() const {
+  Af getAutomata() const {
     return this->automata;
   }
 
@@ -24,9 +30,10 @@ class Brz {
     for (auto &i : this->automata.get_transitions()) {
       i->swap();
     }
+    this->transition = new TransitionHelper(this->automata);
   }
 
-  static std::string cast(char c){
+  static std::string cast(char c) {
     std::stringstream ss;
     std::string s;
 
@@ -34,116 +41,315 @@ class Brz {
     ss >> s;
     return s;
   }
-  std::string* get_transition(std::string tag){
-    std::string *arr = new std::string [2];
-    std::string zero;
-    std::string one;
-    std::vector<Transition *> vec = automata.get_transitions();
-    for(auto &i : tag){
 
-      for(auto &j : vec){
-        if(j->get_begin()->getTag()==cast(i)){
-          (j->get_caracter()=="0")? zero+=j->get_end()->getTag() : one+=j->get_end()->getTag();
+  void sortString(std::string &str) {
+    std::sort(str.begin(), str.end());
+  }
+
+  bool in(std::string word, const std::string &character) {
+    for (auto &i: word) {
+      if (cast(i) == character) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void afd() {
+
+    std::string state;
+    std::string final;
+    std::vector<std::string> vec;
+    for (auto &i: this->automata.get_States()) {
+      final += i.first;
+    }
+    int cont = 1;
+    auto iter = this->automata.get_States().begin();
+
+
+    /*  for(auto &i :this->automata.get_States() ){
+        for(auto &j :this->automata.get_States() ){
+          std::cout<<i.first<<" "<<j.first<<'\n';
+        }
+      }
+  */
+    auto iter2 = this->automata.get_States().begin();
+
+    for (; iter != this->automata.get_States().end(); iter++) {
+      iter2 = iter;
+
+      for (iter2++; iter2 != this->automata.get_States().end(); iter2++) {
+        state = iter->first + iter2->first;
+        vec.push_back(state);
+        state = "";
+      }
+
+    }
+
+    vec.push_back(final);
+    vec.emplace_back("$");
+
+    /*  for(auto &state : vec){
+        this->automata.addState(state);
+      }
+  */
+    /* for (auto &i : vec) {
+       std::cout << i << " ";
+     }
+ */
+
+    //############################### vector finished #######################
+    std::string extra;
+    for (auto &character : this->automata.getAlphabet()) {
+
+      for (auto &statex : vec) {
+
+        for (auto &letter : statex) {
+
+          if (!this->transition->get(cast(letter), character).empty()) {
+
+            for (auto &finalState : this->transition->get(cast(letter), character)) {
+
+              if (!in(extra, finalState)) {
+
+                extra += finalState;
+              }
+
+            }
+
+          }
+
+        }
+        if (extra.empty()) {
+          this->transition->set(statex, character, "$");
+        } else {
+          this->sortString(extra);
+          this->transition->set(statex, character, extra);
+        }
+
+        extra = "";
+      }
+    }
+
+    for (auto &character : this->automata.getAlphabet()) {
+      for (auto &state : this->automata.get_States()) {
+        if (this->transition->get(state.first, character).empty()) {
+          this->transition->set(state.first, character, "$");
         }
       }
     }
-    arr[0]=zero;
-    arr[1]=one;
 
-    return arr;
+    for (auto &state1 : vec) {
+      this->automata.addState(state1);
+    }
+
+//    this->transition->describe();
+
+    std::string newInitialState;
+    for (auto &state2 : this->automata.get_initialStates()) {
+      newInitialState += state2->getTag();
+    }
+
+    this->sortString(newInitialState);
+    this->automata.get_initialStates().clear();
+    this->automata.setInitialState(newInitialState);
+    this->transition->describe();
+
+    std::cout << '\n';
   }
-  void afd() {
+
+  void optimize() {
+
+    Af newAutomata;
+    std::stack<std::string> stackStates;
+    for (auto &state : this->automata.get_initialStates()) {
+      newAutomata.setInitialState(state->getTag());
+      stackStates.push(state->getTag());
+    }
+    int contador = 0;
+    while (!stackStates.empty()) {
+      auto state = stackStates.top();
+
+      stackStates.pop();
+      contador++;
+      for (auto &letter : this->automata.getAlphabet()) {
+
+        auto arrivalStates = this->transition->get(state, letter);
+        for (auto &arrivalState : arrivalStates) {
+          if (!newAutomata.in(arrivalState)) {
+            stackStates.push(arrivalState);
+          }
+
+          newAutomata.addState(arrivalState);
+          newAutomata.addTransition(state, letter, arrivalState);
+
+        }
+      }
+    }
+    for (auto &state:this->automata.get_terminateStates()) {
+      for (auto &state2:newAutomata.get_States()) {
+        if (in(state2.first, state->getTag())) {
+          newAutomata.setTerminateState(state2.first);
+        }
+      }
+    }
+    newAutomata.setNumberStates(contador);
+
+    this->automata = newAutomata;
+    //this->transition->describe();
+    this->transition->clear();
+
+  }
+
+  void remakeAutomata() {
     Af newautomata;
-
-    //################## pushing states ################################
-
-    auto it = automata.get_States().begin();
-
-    // setting the singular states(can it be simplify?)
-
-    for (; it != automata.get_States().end(); it++) {
-      //std::cout<<it->first<<'\n';
-      newautomata.addState(it->first);
-
+    int cont=0;
+    std::map<std::string,std::string> auxiliarMap;
+    for (auto &i : this->automata.get_States()) {
+      auxiliarMap[i.first]=(std::to_string(cont));
+      cont++;
+      newautomata.addState(auxiliarMap[i.first]);
+    }
+    newautomata.getAlphabet()=this->automata.getAlphabet();
+    for(auto &j : this->automata.get_transitions()){
+      newautomata.addTransition(auxiliarMap[j->get_begin()->getTag()],j->get_caracter(),auxiliarMap[j->get_end()->getTag()]);
+    }
+    for(auto &k : this->automata.get_initialStates()) {
+      newautomata.addInitialState(auxiliarMap[k->getTag()]);
     }
 
-    // setting up all the combined states
-    auto cont = automata.get_numberStates();
-    auto it2 = automata.get_States().begin();
-    auto it3 = automata.get_States().begin();
-
-    for (; it2 != automata.get_States().end()--; it2++) {
-
-      it3 = it2;
-
-      for (it3++; it3 != automata.get_States().end(); it3++) {
-
-        newautomata.addState(it2->first + it3->first);
-
-      }
+    for(auto &l : this->automata.get_terminateStates()) {
+      newautomata.addTerminateState(auxiliarMap[l->getTag()]);
     }
 
-    //setting up the last state
-
-    std::string lastState;
-    auto it4 = automata.get_States().begin();
-
-    for (; it4 != automata.get_States().end(); it4++) {
-
-      lastState += it4->first;
-
-    }
-
-    newautomata.addState(lastState);
-    newautomata.addState("$");
-
-
-
-    // ###############################################################
-
-
-
-    //###################### make transitions #############################
-
-    auto it5=newautomata.get_States().begin();
-    std::string * ptr;
-    for(;it5!=newautomata.get_States().end();it5++){
-      ptr=get_transition(it5->first);
-      if(ptr[0].size()!=0){
-        newautomata.addTransition(it5->first,"0",ptr[0]);
-      }
-      else{
-        newautomata.addTransition(it5->first,"0","$");
-      }
-      if(ptr[1].size()!=0){
-        newautomata.addTransition(it5->first,"0",ptr[1]);
-      }
-      else{
-        newautomata.addTransition(it5->first,"0","$");
-      }
-    }
-
-    //################################################################
-
-
-
+    newautomata.setNumberStates(this->automata.get_numberStates());
+    this->automata=newautomata;
   }
-
-  void optimize(){
-
+  void changeStateNames() {
+    int cont = 0;
+    for (auto &state : this->automata.get_States()) {
+      state.second->changeTag((std::to_string(cont)));
+      cont++;
+    }
   }
 
 
-  // describe only for tests
 
-  void describe_test() {
-    auto iter = automata.get_States().begin();
-    for (; iter != automata.get_States().end(); iter++) {
-      std::cout << iter->first << " ";
-    }
 
-  }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /*
+   static std::string cast(char c) {
+     std::stringstream ss;
+     std::string s;
+
+     ss << c;
+     ss >> s;
+     return s;
+   }
+   std::string *get_transition(std::string tag) {
+     std::string *arr = new std::string[2];
+     std::string zero;
+     std::string one;
+     std::vector<Transition *> vec = automata.get_transitions();
+     for (auto &i : tag) {
+
+       for (auto &j : vec) {
+         if (j->get_begin()->getTag() == cast(i)) {
+           (j->get_caracter() == "0") ? zero += j->get_end()->getTag() : one += j->get_end()->getTag();
+         }
+       }
+     }
+     arr[0] = zero;
+     arr[1] = one;
+
+     return arr;
+   }
+   void afd() {
+
+   }
+   bool in(Af automata, std::string Tag) {
+     auto iter = automata.get_States().begin();
+     for (; iter != automata.get_States().end(); iter++) {
+       if (iter->first == Tag) {
+         return true;
+       }
+     }
+     return false;
+   }
+   bool has_transitions(std::string initialTag) {
+     for (auto &i : this->automata.get_transitions()) {
+       if (i->get_begin()->getTag() == initialTag) {
+         return true;
+       }
+     }
+     return false;
+   }
+   void add_reachable_states(Af newautomata, std::string initialTag) {
+     while (has_transitions(initialTag)) {
+       for (auto &i : this->automata.get_transitions()) {
+         if (i->get_begin()->getTag() == initialTag) {
+           newautomata.addState(i->get_end()->getTag());
+           initialTag = i->get_end()->getTag();
+           add_reachable_states(newautomata, initialTag);
+         }
+       }
+     }
+   }
+   void addTransitions(Af newautomata, std::string initialTag) {
+     for (auto &i : this->automata.get_transitions()) {
+       if (i->get_begin()->getTag() == initialTag) {
+         newautomata.addTransition(i->get_begin()->getTag(), i->get_caracter(), i->get_end()->getTag());
+       }
+     }
+   }
+
+   void optimize() {
+
+     Af newautomata;
+     newautomata.addState(this->automata.get_single_initialState()->getTag());
+     std::string initialTag = this->automata.get_single_initialState()->getTag();
+     add_reachable_states(newautomata, initialTag);
+     auto iter = newautomata.get_States().begin();
+     for (; iter != newautomata.get_States().end(); ++iter) {
+       addTransitions(newautomata, iter->first);
+     }
+
+     this->automata = newautomata;
+   }
+
+
+   // describe only for tests
+
+   void describe_test() {
+     auto iter = automata.get_States().begin();
+     for (; iter != automata.get_States().end(); iter++) {
+       std::cout << iter->first << " ";
+     }
+
+   }
+ */
 };
 
 #endif

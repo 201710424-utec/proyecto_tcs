@@ -50,32 +50,23 @@ class StateEquivalence {
   }
 
   void inductiveStep() {
-    for (auto &state : this->automata.get_states()) {
-      for (auto compareState : this->automata.get_states()) {
-        if (state.first != compareState.first) {
-          for (auto &letter : this->automata.getAlphabet()) {
-            auto r = this->transitions->getFirst(state.first, letter);
-            auto s = this->transitions->getFirst(compareState.first, letter);
+    bool touch = true;
+    while(touch) {
+      touch = false;
+      for (auto &state : this->automata.get_states()) {
+        for (auto compareState : this->automata.get_states()) {
+          if (state.first != compareState.first) {
+            for (auto &letter : this->automata.getAlphabet()) {
+              auto r = this->transitions->getFirst(state.first, letter);
+              auto s = this->transitions->getFirst(compareState.first, letter);
 
-            if (!this->equivalenceMatrix[r][s]) {
-              this->equivalenceMatrix[state.second->getTag()][compareState.second->getTag()] = !this->equivalent;
-              this->equivalenceMatrix[compareState.second->getTag()][state.second->getTag()] = !this->equivalent;
-            }
-          }
-        }
-      }
-    }
-
-    for (auto &state : this->automata.get_states()) {
-      for (auto compareState : this->automata.get_states()) {
-        if (state.first != compareState.first) {
-          for (auto &letter : this->automata.getAlphabet()) {
-            auto r = this->transitions->getFirst(state.first, letter);
-            auto s = this->transitions->getFirst(compareState.first, letter);
-
-            if (!this->equivalenceMatrix[r][s]) {
-              this->equivalenceMatrix[state.second->getTag()][compareState.second->getTag()] = !this->equivalent;
-              this->equivalenceMatrix[compareState.second->getTag()][state.second->getTag()] = !this->equivalent;
+              if (!this->equivalenceMatrix[r][s]) {
+                if (this->equivalenceMatrix[state.second->getTag()][compareState.second->getTag()]) {
+                  touch = true;
+                  this->equivalenceMatrix[state.second->getTag()][compareState.second->getTag()] = !this->equivalent;
+                  this->equivalenceMatrix[compareState.second->getTag()][state.second->getTag()] = !this->equivalent;
+                }
+              }
             }
           }
         }
@@ -85,18 +76,18 @@ class StateEquivalence {
 
   void
   describe() {
-    for (auto &state : this->equivalenceMatrix) {
-      for (auto &list : state.second) {
+//    for (auto &state : this->equivalenceMatrix) {
+//      for (auto &list : state.second) {
 //        if (state.first == list.first) {
 //          std::cout << "- ";
 //        } else {
-          std::cout << list.second << " ";
+//          std::cout << list.second << " ";
 //        }
-      }
+//      }
+//
+//      std::cout << std::endl;
+//    }
 
-      std::cout << std::endl;
-    }
-    /*
     auto i = this->equivalenceMatrix.begin();
     auto x = 0;
 
@@ -106,7 +97,7 @@ class StateEquivalence {
         std::cout << (*j).second << " ";
       }
       std::cout << std::endl;
-    }*/
+    }
   }
 };
 

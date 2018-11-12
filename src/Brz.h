@@ -198,7 +198,7 @@ class Brz {
   void remakeAutomata() {
     Af newautomata;
     int cont = 0;
-    auto letter = 'x';
+    auto letter = '0';
     std::map<std::string, std::string> auxiliarMap;
 
     for (auto &i : this->automata.get_States()) {
@@ -235,6 +235,7 @@ class Brz {
     this->reversing();
     this->afd();
     this->optimize();
+    this->remakeAutomata();
   }
 };
 

@@ -163,12 +163,26 @@ class Af {
     return numberStates;
   }
 
+  std::map<std::string, State *> &get_States() {
+    return this->states;
+  }
+
   std::vector<State *> &get_initialStates() {
     return this->initialStates;
   }
 
   std::vector<State *> &get_terminateStates() {
     return this->terminateStates;
+  }
+
+  bool isTerminateState(State *stateToEvaluate) {
+    for (auto itTerminateStates = (this->get_terminateStates()).begin();
+         itTerminateStates != (this->get_terminateStates()).end(); itTerminateStates++) {
+      if (*stateToEvaluate == **itTerminateStates) {
+        return true;
+      }
+    }
+    return false;
   }
 
   std::vector<Transition *> get_transitions() {
@@ -180,10 +194,6 @@ class Af {
 
   std::vector<std::string> getAlphabet() {
     return this->alphabet;
-  }
-
-  std::map<std::string, State*> &get_States() {
-    return this->states;
   }
 
   int getNumberStates() {

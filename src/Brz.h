@@ -198,7 +198,7 @@ class Brz {
   void remakeAutomata() {
     Af newautomata;
     int cont = 0;
-    auto letter = 'x';
+    auto letter = '0';
     std::map<std::string, std::string> auxiliarMap;
 
     for (auto &i : this->automata.get_States()) {
@@ -227,6 +227,9 @@ class Brz {
     this->automata = newautomata;
   }
 
+  /**
+   * make swap of transitions (reversing) , convert AFN in AFD (afd) , use only recheable states (optimize), and change states names (remake)
+   */
   void execute(){
     this->reversing();
     this->afd();
@@ -235,6 +238,7 @@ class Brz {
     this->reversing();
     this->afd();
     this->optimize();
+    this->remakeAutomata();
   }
 };
 

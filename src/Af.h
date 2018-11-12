@@ -161,6 +161,15 @@ class Af {
     return this->terminateStates;
   }
 
+  bool isTerminateState(State* stateToEvaluate) {
+    for (auto itTerminateStates = (this->get_terminateStates()).begin(); itTerminateStates != (this->get_terminateStates()).end(); itTerminateStates++) {
+      if (*stateToEvaluate == **itTerminateStates) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   std::vector<Transition *> get_transitions() {
     return this->transitions;
   }

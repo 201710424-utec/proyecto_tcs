@@ -39,17 +39,37 @@ class Af {
     this->alphabet.push_back(letter);
   }
 
-  void addTransition(const std::string &departureState, const std::string &caracter, const std::string &arrivalState) {
-    auto *newTransition = new Transition{new State{departureState}, new State{arrivalState}, caracter};
-    this->transitions.push_back(newTransition);
-  }
-
   Transition *getTransition(const std::string state, const std::string caracter) {
     for (auto &transition : this->get_transitions()) {
       if (transition->get_begin()->getTag() == state && transition->get_caracter() == caracter) {
         return transition;
       }
     }
+  }
+
+  void setAllAlphabet(std::vector<std::string> alphabet) {
+    this->alphabet = alphabet;
+  }
+
+  void addTerminateState(const std::string &finishStateTag) {
+    this->terminateStates.push_back(this->states[finishStateTag]);
+  }
+  void addInitialState(const std::string &initialStateTag) {
+    this->initialStates.push_back(this->states[initialStateTag]);
+  }
+
+  void addTransition(std::string departureState, std::string caracter, std::string arrivalState) {
+    auto *newTransition = new Transition{this->states[departureState], this->states[arrivalState], caracter};
+    this->transitions.push_back(newTransition);
+  }
+
+  bool in(std::string stateTest) {
+    for (auto &i: this->states) {
+      if (i.first == stateTest) {
+        return true;
+      }
+    }
+    return false;
   }
 
   void buildFromConsole() {
@@ -139,6 +159,10 @@ class Af {
     return this->states[castIndex];
   }
 
+  int get_numberStates() {
+    return numberStates;
+  }
+
   std::vector<State *> &get_initialStates() {
     return this->initialStates;
   }
@@ -150,9 +174,16 @@ class Af {
   std::vector<Transition *> get_transitions() {
     return this->transitions;
   }
+  State *get_single_initialState() {
+    return this->initialStates[0];
+  }
 
   std::vector<std::string> getAlphabet() {
     return this->alphabet;
+  }
+
+  std::map<std::string, State*> &get_States() {
+    return this->states;
   }
 
   int getNumberStates() {

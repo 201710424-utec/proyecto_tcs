@@ -3,6 +3,7 @@
 
 #include "State.h"
 #include <string>
+#include <utility>
 
 class Transition {
  private:
@@ -12,7 +13,7 @@ class Transition {
   std::string caracter;
 
  public:
-  Transition(State *begin, State *end, std::string caracter) : begin(begin), end(end), caracter(caracter) {};
+  Transition(State *&begin, State *&end, std::string caracter) : begin(begin), end(end), caracter(std::move(caracter)) {};
 
   State *get_begin() {
     return this->begin;

@@ -40,7 +40,7 @@ class StateEquivalence {
 
   void baseCase() {
     for (auto &terminateState : this->automata.get_terminateStates()) {
-      for (auto &state : this->automata.get_states()) {
+      for (auto &state : this->automata.get_States()) {
         if (!state.second->isTerminateState()) {
           this->equivalenceMatrix[terminateState->getTag()][state.second->getTag()] = false;
           this->equivalenceMatrix[state.second->getTag()][terminateState->getTag()] = false;
@@ -51,8 +51,24 @@ class StateEquivalence {
 
   void inductiveStep() {
     for (auto &state : this->automata.get_states()) {
-      for (auto &compareState : this->automata.get_states()) {
-        if (state.second->getIndex() != compareState.second->getIndex()) {
+      for (auto compareState : this->automata.get_states()) {
+        if (state.first != compareState.first) {
+          for (auto &letter : this->automata.getAlphabet()) {
+            auto r = this->transitions->getFirst(state.first, letter);
+            auto s = this->transitions->getFirst(compareState.first, letter);
+
+            if (!this->equivalenceMatrix[r][s]) {
+              this->equivalenceMatrix[state.second->getTag()][compareState.second->getTag()] = !this->equivalent;
+              this->equivalenceMatrix[compareState.second->getTag()][state.second->getTag()] = !this->equivalent;
+            }
+          }
+        }
+      }
+    }
+
+    for (auto &state : this->automata.get_states()) {
+      for (auto compareState : this->automata.get_states()) {
+        if (state.first != compareState.first) {
           for (auto &letter : this->automata.getAlphabet()) {
             auto r = this->transitions->getFirst(state.first, letter);
             auto s = this->transitions->getFirst(compareState.first, letter);
@@ -67,18 +83,30 @@ class StateEquivalence {
     }
   }
 
-  void describe() {
+  void
+  describe() {
     for (auto &state : this->equivalenceMatrix) {
       for (auto &list : state.second) {
-        if (state.first == list.first) {
-          std::cout << "- ";
-        } else {
+//        if (state.first == list.first) {
+//          std::cout << "- ";
+//        } else {
           std::cout << list.second << " ";
-        }
+//        }
       }
 
       std::cout << std::endl;
     }
+    /*
+    auto i = this->equivalenceMatrix.begin();
+    auto x = 0;
+
+    for (i++; i != this->equivalenceMatrix.end(); ++i) {
+      x++;
+      for (auto j = (*i).second.begin(); j != std::next((*i).second.begin(), x); j++) {
+        std::cout << (*j).second << " ";
+      }
+      std::cout << std::endl;
+    }*/
   }
 };
 

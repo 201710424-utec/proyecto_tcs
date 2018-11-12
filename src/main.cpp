@@ -7,9 +7,13 @@ int main() {
   Af afd;
   afd.buildFromConsole();
 
-  auto * seq = new StateEquivalence{afd};
-  seq->fillTable();
-  seq->describe();
+  Brz *brz = new Brz{afd};
+  brz->execute();
+  brz->getAutomata().describe();
+
+//  auto * seq = new StateEquivalence{afd};
+//  seq->fillTable();
+//  seq->describe();
 
   return 0;
 }

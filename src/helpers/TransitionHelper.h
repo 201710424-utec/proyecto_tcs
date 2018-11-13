@@ -8,12 +8,8 @@
 #include "../Af.h"
 
 class TransitionHelper {
-  std::map<std::string, std::map<std::string, std::vector<std::string> >> transitions;
-
+  std::map<std::string, std::map<std::string, std::vector<std::string>>> transitions;
  public:
-  void sortString(std::string &str) {
-    std::sort(str.begin(), str.end());
-  }
   TransitionHelper(Af automata) {
     for (auto &transition : automata.get_transitions()) {
       std::string value = transition->get_end()->getTag();
@@ -21,18 +17,22 @@ class TransitionHelper {
       std::string value2 = transition->get_begin()->getTag();
       this->sortString(value2);
       this->transitions[value2][transition->get_caracter()].push_back(value);
-
-
     }
   }
-  void sortVector(){
-    for(auto &r :  this->transitions){
-      for(auto &k : r.second){
-        std::sort(k.second.begin(),k.second.end());
+
+  void sortString(std::string &str) {
+    std::sort(str.begin(), str.end());
+  }
+
+  void sortVector() {
+    for (auto &r :  this->transitions) {
+      for (auto &k : r.second) {
+        std::sort(k.second.begin(), k.second.end());
       }
     }
   }
-  ~TransitionHelper(){
+
+  ~TransitionHelper() {
     this->transitions.clear();
   };
 
@@ -44,11 +44,11 @@ class TransitionHelper {
     return this->transitions[state][character];
   }
 
-  std::map<std::string, std::vector<std::string>> getMap2(std::string state) {
-    return this->transitions[state];
+  std::string getFirst(std::string state, std::string character) {
+    return this->get(state, character)[0];
   }
 
-  void clear(){
+  void clear() {
     this->transitions.clear();
   }
 
@@ -70,4 +70,3 @@ class TransitionHelper {
 };
 
 #endif //PROYECTO_TCS_TRANSITIONHELPER_H
-

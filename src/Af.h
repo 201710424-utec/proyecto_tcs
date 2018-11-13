@@ -15,8 +15,8 @@ class Af {
   std::vector<State *> initialStates;
   std::vector<State *> terminateStates;
   std::vector<std::string> alphabet;
- public:
 
+ public:
   void addState(std::string newState) {
     this->states[newState] = new State{newState};
   }
@@ -31,8 +31,20 @@ class Af {
   }
 
   void setTerminateState(const std::string &finishStateTag) {
-    this->states[finishStateTag] = new State{finishStateTag};
+    this->states[finishStateTag] = new State{finishStateTag, true};
     this->terminateStates.push_back(this->states[finishStateTag]);
+  }
+
+  void setAlphabet(const std::string &letter) {
+    this->alphabet.push_back(letter);
+  }
+
+  Transition *getTransition(const std::string state, const std::string caracter) {
+    for (auto &transition : this->get_transitions()) {
+      if (transition->get_begin()->getTag() == state && transition->get_caracter() == caracter) {
+        return transition;
+      }
+    }
   }
 
   void setAllAlphabet(std::vector<std::string> alphabet) {
@@ -86,7 +98,7 @@ class Af {
       this->setTerminateState(terminateState);
 
       if (!this->states[terminateState]) {
-        this->states[terminateState] = new State{terminateState};
+        this->states[terminateState] = new State{terminateState, true};
       }
     };
 
@@ -110,14 +122,6 @@ class Af {
       auto *transition = new Transition{this->states[departureState], this->states[terminateState], transitionCaracter};
       this->transitions.push_back(transition);
     }
-  }
-
-  void setAlphabet(const std::string &letter) {
-    this->alphabet.push_back(letter);
-  }
-
-  std::vector<std::string> getAlphabet() {
-    return this->alphabet;
   }
 
   void describe() {
@@ -146,9 +150,19 @@ class Af {
     }
   }
 
+  std::map<std::string, State *> get_states() {
+    return this->states;
+  }
+
+  State *getState(int index) {
+    auto castIndex = std::to_string(index);
+    return this->states[castIndex];
+  }
+
   int get_numberStates() {
     return numberStates;
   }
+
   std::map<std::string, State *> &get_States() {
     return this->states;
   }
@@ -161,11 +175,29 @@ class Af {
     return this->terminateStates;
   }
 
+  bool isTerminateState(State *stateToEvaluate) {
+    for (auto itTerminateStates = (this->get_terminateStates()).begin();
+         itTerminateStates != (this->get_terminateStates()).end(); itTerminateStates++) {
+      if (*stateToEvaluate == **itTerminateStates) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   std::vector<Transition *> get_transitions() {
     return this->transitions;
   }
   State *get_single_initialState() {
     return this->initialStates[0];
+  }
+
+  std::vector<std::string> getAlphabet() {
+    return this->alphabet;
+  }
+
+  int getNumberStates() {
+    return this->numberStates;
   }
 
   Af() = default;

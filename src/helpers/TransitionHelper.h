@@ -5,7 +5,7 @@
 #ifndef PROYECTO_TCS_TRANSITIONHELPER_H
 #define PROYECTO_TCS_TRANSITIONHELPER_H
 
-#include "../Af.h"
+#include "../models/Af.h"
 
 class TransitionHelper {
   std::map<std::string, std::map<std::string, std::vector<std::string>>> transitions;

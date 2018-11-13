@@ -1,9 +1,9 @@
 #ifndef MATRIXEQUIVALENCES_H
 #define MATRIXEQUIVALENCES_H
 
-#include "Af.h"
-#include "helpers/MatrixEquivalencesPixel.h"
-#include "helpers/TransitionHelper.h"
+#include "../models/Af.h"
+#include "../helpers/MatrixEquivalencesPixel.h"
+#include "../helpers/TransitionHelper.h"
 #include <vector>
 #include <map>
 #include <queue>
@@ -74,17 +74,11 @@ public:
   }
 
   void describe () {
-    std::cout << '\n';
-    for (std::map<std::string, int>::iterator ity = this->headers.begin(); ity != this->headers.end(); ity++) {
-      std::cout << '\t' << ity->first;
-    }
-    std::cout << '\n';
-    for (std::map<std::string, int>::iterator itx = this->headers.begin(); itx != this->headers.end(); itx++) {
-      std::cout << itx->first << '\t';
-      for (std::map<std::string, int>::iterator ity = this->headers.begin(); ity != this->headers.end(); ity++) {
-        std::cout << (this->matrix[itx->second][ity->second]).getValue() <<'\t';
+    for (auto &itx : this->headers) {
+      for (auto &header : this->headers) {
+        std::cout << (this->matrix[itx.second][header.second]).getValue() << " ";
       }
-      std::cout << '\n';
+      std::cout << std::endl;
     }
   }
 

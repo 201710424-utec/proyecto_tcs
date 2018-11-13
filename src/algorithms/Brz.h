@@ -1,12 +1,12 @@
 #ifndef BRZ_H
 #define BRZ_H
 
-#include "Af.h"
+#include "../models/Af.h"
 #include <sstream>
 #include <string>
 #include <math.h>
 #include <map>
-#include "helpers/TransitionHelper.h"
+#include "../helpers/TransitionHelper.h"
 #include <algorithm>
 #include <stack>
 

@@ -28,7 +28,6 @@ public:
   }
 
   ~MatrixEquivalencesPixel() {}
-
 };
 
 #endif //PROYECTO_TCS_MATRIXEQUIVALENCESPIXEL_H

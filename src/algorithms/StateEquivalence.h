@@ -51,7 +51,7 @@ class StateEquivalence {
 
   void inductiveStep() {
     bool touch = true;
-    while(touch) {
+    while (touch) {
       touch = false;
       for (auto &state : this->automata.get_states()) {
         for (auto compareState : this->automata.get_states()) {
@@ -74,27 +74,14 @@ class StateEquivalence {
     }
   }
 
-  void
-  describe() {
-//    for (auto &state : this->equivalenceMatrix) {
-//      for (auto &list : state.second) {
-//        if (state.first == list.first) {
-//          std::cout << "- ";
-//        } else {
-//          std::cout << list.second << " ";
-//        }
-//      }
-//
-//      std::cout << std::endl;
-//    }
-
-    auto i = this->equivalenceMatrix.begin();
-    auto x = 0;
-
-    for (i++; i != this->equivalenceMatrix.end(); ++i) {
-      x++;
-      for (auto j = (*i).second.begin(); j != std::next((*i).second.begin(), x); j++) {
-        std::cout << (*j).second << " ";
+  void describe() {
+    for (auto &state : this->equivalenceMatrix) {
+      for (auto &list : state.second) {
+        if (state.first == list.first) {
+          std::cout << "- ";
+        } else {
+          std::cout << list.second << " ";
+        }
       }
       std::cout << std::endl;
     }

@@ -3,8 +3,8 @@
 
 #import <vector>
 #import <iostream>
-#import "../Af.h"
-#import "../State.h"
+#import "../models/Af.h"
+#import "../models/State.h"
 #import "../helpers/TransitionHelper.h"
 
 class StateEquivalence {
@@ -77,11 +77,7 @@ class StateEquivalence {
   void describe() {
     for (auto &state : this->equivalenceMatrix) {
       for (auto &list : state.second) {
-        if (state.first == list.first) {
-          std::cout << "- ";
-        } else {
           std::cout << list.second << " ";
-        }
       }
       std::cout << std::endl;
     }

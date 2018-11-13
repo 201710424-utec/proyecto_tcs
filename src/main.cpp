@@ -1,8 +1,8 @@
-#include "Af.h"
-#include "Brz.h"
+#include "models/Af.h"
+#include "algorithms/Brz.h"
 #include "algorithms/StateEquivalence.h"
-#include "State.h"
-#include "MatrixEquivalences.h"
+#include "algorithms/MatrixEquivalences.h"
+#include "models/State.h"
 
 int main() {
   Af afd;

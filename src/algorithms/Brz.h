@@ -1,24 +1,22 @@
 #ifndef BRZ_H
 #define BRZ_H
-
 #include "../models/Af.h"
-#include <sstream>
 #include <string>
-#include <math.h>
+#include <cmath>
 #include <map>
 #include "../helpers/TransitionHelper.h"
 #include <algorithm>
+#include <vector>
 #include <stack>
+#include <sstream>
 
 class Brz {
 
  private:
-
   Af automata;
   TransitionHelper *transition;
 
  public:
-
   Brz() = default;
   explicit Brz(const Af &automata) {
     this->automata = automata;
@@ -38,87 +36,73 @@ class Brz {
     }
     this->transition = new TransitionHelper(this->automata);
     this->transition->sortVector();
-
+    std::cout << '\n';
   }
 
   static std::string cast(char c) {
     std::stringstream ss;
     std::string s;
-
     ss << c;
     ss >> s;
     return s;
   }
 
-  void sortString(std::string &str) {
-    std::sort(str.begin(), str.end());
-  }
-
-  bool in(std::string word, const std::string &character) {
-    for (auto &i: word) {
-      if (cast(i) == character) {
+  bool in(std::vector<std::string> vec, std::string a) {
+    for (auto &i : vec) {
+      if (a == i) {
         return true;
       }
     }
     return false;
   }
 
+  void sortString(std::string &str) {
+    std::sort(str.begin(), str.end());
+  }
+
+  void get(std::string str, std::string res, std::vector<std::string> &vec) {
+    sortString(res);
+    if (!in(vec, res) && res != "") {
+      sortString(res);
+      vec.push_back(res);
+    }
+    for (int i = 0; i < str.length(); i++)
+      get(std::string(str).erase(i, 1), res + str[i], vec);
+  }
+
+  bool in_string(std::string word, std::string letter) {
+    int cont = 0;
+
+    for (auto &i : word) {
+      if (cast(i) == letter) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  std::string reach(std::string word, std::string character) {
+    std::string extra = "";
+    for (auto &letter : word) {
+      for (auto &final :this->transition->get(cast(letter), character)) {
+        if (!in_string(extra, final) && final != "$") {
+          extra += final;
+        }
+      }
+    }
+
+    if (!extra.empty()) {
+      sortString(extra);
+      return extra;
+    } else {
+      return "$";
+    }
+  }
+
   /**
    * Función que convierte el automata AFN a AFD
    */
   void afd() {
-
-    std::string state;
-    std::string final;
-    std::vector<std::string> vec;
-
-    for (auto &i: this->automata.get_States()) {
-      final += i.first;
-    }
-
-    int cont = 1;
-
-    auto iter = this->automata.get_States().begin();
-    auto iter2 = this->automata.get_States().begin();
-
-    for (; iter != this->automata.get_States().end(); iter++) {
-      iter2 = iter;
-      for (iter2++; iter2 != this->automata.get_States().end(); iter2++) {
-        state = iter->first + iter2->first;
-        this->sortString(state);
-        vec.push_back(state);
-        state = "";
-
-      }
-
-    }
-
-    vec.push_back(final);
-    vec.push_back("$");
-
-    std::string extra;
-    for (auto &character : this->automata.getAlphabet()) {
-      for (auto &statex : vec) {
-        for (auto &letter : statex) {
-          if (!this->transition->get(cast(letter), character).empty()) {
-            for (auto &finalState : this->transition->get(cast(letter), character)) {
-              if (!in(extra, finalState)) {
-                extra += finalState;
-                this->sortString(extra);
-              }
-            }
-          }
-        }
-        if (extra.empty()) {
-          this->transition->set(statex, character, "$");
-        } else {
-          this->sortString(extra);
-          this->transition->set(statex, character, extra);
-        }
-        extra = "";
-      }
-    }
-
     for (auto &character : this->automata.getAlphabet()) {
       for (auto &state : this->automata.get_States()) {
         if (this->transition->get(state.first, character).empty()) {
@@ -127,69 +111,65 @@ class Brz {
       }
     }
 
-    for (auto &state1 : vec) {
-      this->sortString(state1);
-      this->automata.addState(state1);
-    }
-
-    std::string newInitialState;
-    for (auto &state2 : this->automata.get_initialStates()) {
-      newInitialState += state2->getTag();
-    }
-
-    this->sortString(newInitialState);
-    this->automata.get_initialStates().clear();
-    this->automata.setInitialState(newInitialState);
-  }
-
-/**
- *tomamos los estados alcanzables del automata AFD
- */
-  void optimize() {
-    Af newAutomata;
-    std::stack<std::string> stackStates;
-
+    std::string initialState;
     for (auto &state : this->automata.get_initialStates()) {
-      newAutomata.setInitialState(state->getTag());
-      stackStates.push(state->getTag());
+      initialState += state->getTag();
     }
+    sortString(initialState);
 
-    int contador = 0;
-    while (!stackStates.empty()) {
-      auto state = stackStates.top();
-      stackStates.pop();
-      contador++;
-
-      for (auto &letter : this->automata.getAlphabet()) {
-        std::string newFinalState;
-
-        auto arrivalStates = this->transition->get(state, letter);
-        for (auto &arrivalState : arrivalStates) {
-          newFinalState += arrivalState;
-        }
-
-        if (!newAutomata.in(newFinalState)) {
-          newAutomata.addState(newFinalState);
-          stackStates.push(newFinalState);
-        }
-
-        newAutomata.addTransition(state, letter, newFinalState);
-        newFinalState = "";
-      }
+    std::string endState;
+    for (auto &state : this->automata.get_terminateStates()) {
+      endState = state->getTag();
     }
+    sortString(endState);
 
-    for (auto &state:this->automata.get_terminateStates()) {
-      for (auto &state2:newAutomata.get_States()) {
-        if (in(state2.first, state->getTag())) {
-          newAutomata.setTerminateState(state2.first);
+    TransitionHelper *extraHelper = new TransitionHelper();
+    std::vector<std::string> visited;
+    std::stack<std::string> stack;
+    stack.push(initialState);
+
+    while (!stack.empty()) {
+      std::string initial = stack.top();
+      visited.push_back(initial);
+      auto h = stack.top();
+      stack.pop();
+
+      for (auto &character : this->automata.getAlphabet()) {
+        std::string reaching = reach(initial, character);
+        extraHelper->set(initial, character, reaching);
+        if (!in(visited, reaching)) {
+          sortString(reaching);
+          stack.push(reaching);
+          visited.push_back(reaching);
         }
       }
     }
+    this->transition = extraHelper;
 
-    newAutomata.setNumberStates(contador);
+    Af newAutomata;
+    int cont = 0;
+    for (auto &state : this->transition->get_map()) {
+      cont++;
+      newAutomata.addState(state.first);
+    }
+    newAutomata.setInitialState(initialState);
+    newAutomata.setNumberStates(cont);
+
+    for (auto &state : newAutomata.get_States()) {
+      if (in_string(state.first, endState)) {
+        newAutomata.setTerminateState(state.first);
+      }
+    }
+
+    for (auto &state : newAutomata.get_States()) {
+      for (auto &alpha : this->automata.getAlphabet()) {
+        for (auto &final : this->transition->get(state.first, alpha))
+          newAutomata.addTransition(state.first, alpha, final);
+      }
+    }
+
     newAutomata.setAllAlphabet(this->automata.getAlphabet());
     this->automata = newAutomata;
-    this->transition->clear();
   }
 
   /**
@@ -227,16 +207,16 @@ class Brz {
     this->automata = newautomata;
   }
 
-  void execute(){
+  void execute() {
+
     this->reversing();
     this->afd();
-    this->optimize();
     this->remakeAutomata();
     this->reversing();
     this->afd();
-    this->optimize();
     this->remakeAutomata();
   }
+
 };
 
 #endif

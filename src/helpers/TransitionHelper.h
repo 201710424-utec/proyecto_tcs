@@ -10,6 +10,8 @@
 class TransitionHelper {
   std::map<std::string, std::map<std::string, std::vector<std::string>>> transitions;
  public:
+  TransitionHelper() {};
+
   TransitionHelper(Af automata) {
     for (auto &transition : automata.get_transitions()) {
       std::string value = transition->get_end()->getTag();
@@ -66,6 +68,10 @@ class TransitionHelper {
       std::cout << "\n";
     }
     std::cout << '\n';
+  }
+
+  std::map<std::string, std::map<std::string, std::vector<std::string>>> get_map() {
+    return transitions;
   }
 };
 

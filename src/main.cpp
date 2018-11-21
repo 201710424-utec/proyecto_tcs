@@ -12,12 +12,12 @@ int main() {
   brz->execute();
   brz->getAutomata().describe();
 
-  auto * seq = new StateEquivalence{afd};
-  seq->fillTable();
-  seq->describe();
+   auto * seq = new StateEquivalence{afd};
+   seq->fillTable();
+   seq->describe();
 
-  MatrixEquivalences matrixEquivalences(afd);
-  matrixEquivalences.describe();
+   MatrixEquivalences matrixEquivalences(afd);
+   matrixEquivalences.describe();
 
   return 0;
 }

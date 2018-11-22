@@ -12,7 +12,7 @@ int main() {
   brz->execute();
   brz->getAutomata().describe();
 
-  auto * seq = new StateEquivalence{afd};
+  auto *seq = new StateEquivalence{afd};
   seq->fillTable();
   seq->describe();
 

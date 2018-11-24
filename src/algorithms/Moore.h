@@ -16,8 +16,6 @@ class Moore {
   std::vector<std::vector<MatrixEquivalencesPixel>> matrix;
 
   std::vector<T> states;
-
-  // new code
   std::map<int, bool> wasAdded;
   std::set<std::set<int>> sets;
 
@@ -169,9 +167,9 @@ class Moore {
 
   void setTransitions(std::map<int, std::set<int>> &mapHelper, Af &newAutomata) {
     for (auto state : mapHelper) {
+      auto it = state.second.begin();
+      int singleState = (*it);
       for (auto &letter : newAutomata.getAlphabet()) {
-        auto it = state.second.begin(); //mover up
-        int singleState = (*it); // mover up
         auto a = this->automata.getTransition(std::to_string(singleState), letter);
 
         bool timeToBreak = false;
@@ -182,7 +180,6 @@ class Moore {
 
           for (auto value : stateToFind.second) {
             if (value == std::stoi(a->get_end()->getTag())) {
-              // 4, no 6.
               newAutomata.addTransition(std::to_string(state.first), letter, std::to_string(stateToFind.first));
               timeToBreak = true;
               break;

@@ -74,10 +74,22 @@ class StateEquivalence {
     }
   }
 
+  void describeAsLowerMatrix() {
+    auto it = this->equivalenceMatrix.begin();
+    int x = 0;
+    for (it++; it != this->equivalenceMatrix.end(); ++it) {
+      x++;
+      for (auto j = (*it).second.begin(); j != std::next((*it).second.begin(), x); j++) {
+        std::cout << (*j).second << " ";
+      }
+      std::cout << std::endl;
+    }
+  }
+
   void describe() {
     for (auto &state : this->equivalenceMatrix) {
       for (auto &list : state.second) {
-          std::cout << list.second << " ";
+        std::cout << list.second << " ";
       }
       std::cout << std::endl;
     }

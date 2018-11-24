@@ -12,15 +12,23 @@ class TransitionHelper {
  public:
   TransitionHelper() {};
 
-  TransitionHelper(Af automata) {
+TransitionHelper(Af &automata) {
     for (auto &transition : automata.get_transitions()) {
-      std::string value = transition->get_end()->getTag();
-      this->sortString(value);
-      std::string value2 = transition->get_begin()->getTag();
-      this->sortString(value2);
-      this->transitions[value2][transition->get_caracter()].push_back(value);
+      std::string begin = transition->get_begin()->getTag();
+      std::string end = transition->get_end()->getTag();
+      this->transitions[begin][transition->get_caracter()].push_back(end);
     }
   }
+
+  // TransitionHelper(Af automata) {
+  //   for (auto &transition : automata.get_transitions()) {
+  //     std::string value = transition->get_end()->getTag();
+  //     //this->sortString(value);
+  //     std::string value2 = transition->get_begin()->getTag();
+  //     //this->sortString(value2);
+  //     this->transitions[value2][transition->get_caracter()].push_back(value);
+  //   }
+  // }
 
   void sortString(std::string &str) {
     std::sort(str.begin(), str.end());

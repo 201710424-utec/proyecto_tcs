@@ -73,6 +73,31 @@ public:
     }
   }
 
+  void describeAsLowerMatrix() {
+    auto it = this->matrix.begin();
+    int x = 0;
+    for (it++; it != this->matrix.end(); ++it) {
+      x++;
+      for (auto j = (*it).begin(); j != std::next((*it).begin(), x); j++) {
+        std::cout << (*j).getValue() << " ";
+      }
+      std::cout << std::endl;
+    }
+  }
+
+  void describeAsMatrix () {
+    for (auto &state : this->matrix) {
+      for (auto &list : state) {
+        std::cout << list.getValue() << " ";
+      }
+      std::cout << std::endl;
+    }
+  }
+
+  std::vector<std::vector<MatrixEquivalencesPixel>> getMatrix() {
+    return this->matrix;
+  }
+
   void describe () {
     for (auto &itx : this->headers) {
       for (auto &header : this->headers) {

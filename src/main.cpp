@@ -1,4 +1,5 @@
 #include "algorithms/Brz.h"
+#include "algorithms/Hopcroft.h"
 #include "algorithms/StateEquivalence.h"
 #include "algorithms/MatrixEquivalences.h"
 #include "algorithms/Moore.h"
@@ -25,6 +26,10 @@ int main() {
   auto *moore = new Moore<int>(afd, matrixEquivalences.getMatrix());
   moore->exec();
   moore->describe();
+
+  // Hopcroft
+  Hopcroft *hop = new Hopcroft(afd);
+  hop->execute().describe();
 
   return 0;
 }

@@ -1,13 +1,13 @@
 #ifndef MOORE
 #define MOORE
 
-#import <iostream>
-#import <vector>
-#import <map>
-#import <set>
-#import <algorithm>
-#import "../helpers/MatrixEquivalencesPixel.h"
-#import "../models/Af.h"
+#include <iostream>
+#include <vector>
+#include <map>
+#include <set>
+#include <algorithm>
+#include "../helpers/MatrixEquivalencesPixel.h"
+#include "../models/Af.h"
 
 template<class T>
 class Moore {

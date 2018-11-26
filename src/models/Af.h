@@ -159,6 +159,10 @@ class Af {
     return this->states[castIndex];
   }
 
+  State *getState(std::string index) {
+    return this->states[index];
+  }
+
   int get_numberStates() {
     return numberStates;
   }
@@ -179,6 +183,16 @@ class Af {
     for (auto itTerminateStates = (this->get_terminateStates()).begin();
          itTerminateStates != (this->get_terminateStates()).end(); itTerminateStates++) {
       if (*stateToEvaluate == **itTerminateStates) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool isInitialState(State *stateToEvaluate) {
+    for (auto itInitialStates = (this->get_initialStates()).begin();
+         itInitialStates != (this->get_initialStates()).end(); itInitialStates++) {
+      if (*stateToEvaluate == **itInitialStates) {
         return true;
       }
     }

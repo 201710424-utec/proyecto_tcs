@@ -1,11 +1,11 @@
 #ifndef PROYECTO_TCS_STATEEQUIVALENCE_H
 #define PROYECTO_TCS_STATEEQUIVALENCE_H
 
-#import <vector>
-#import <iostream>
-#import "../models/Af.h"
-#import "../models/State.h"
-#import "../helpers/TransitionHelper.h"
+#include <vector>
+#include <iostream>
+#include "../models/Af.h"
+#include "../models/State.h"
+#include "../helpers/TransitionHelper.h"
 
 class StateEquivalence {
  private:

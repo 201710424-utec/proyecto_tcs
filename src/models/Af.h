@@ -200,6 +200,20 @@ class Af {
     return this->numberStates;
   }
 
+  State *getState(std::string index) {
+    return this->states[index];
+  }
+
+  bool isInitialState(State *stateToEvaluate) {
+    for (auto itInitialStates = (this->get_initialStates()).begin();
+         itInitialStates != (this->get_initialStates()).end(); itInitialStates++) {
+      if (*stateToEvaluate == **itInitialStates) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Af() = default;
   ~Af() = default;
 };
